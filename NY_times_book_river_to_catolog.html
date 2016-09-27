@@ -1,0 +1,274 @@
+<!-- Ny_Times_Best_Carsouel_FCPL_Catalog_Display by k.swilley -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Index_NYTIMES</title>
+
+    <style>
+
+        #contentContainer {
+            width: 960px;
+            height: 160px;
+            border: .5px transparent;
+            max-width:99%;
+            overflow: hidden;
+                }
+        #wrapper {
+            width: 2200px;
+            transform: translate3d(0, 0, 0);
+            transition: transform .5s ease-in-out;
+                }
+        .content{
+            float:left;
+            margin:3px;
+            white-space: normal;
+            width:100px;
+            height:150px;
+            }
+        #navLinks {
+            text-align: center;
+            width: 950px;
+            max-width:100%;
+            }
+         #navLinks ul {
+        margin: 0px;
+        padding: 0px;
+        display: inline-block;
+        margin-top: 0px;
+            }
+        #navLinks ul li {
+            float: left;
+            text-align: center;
+            margin: 7px;
+            list-style: none;
+            cursor: pointer;
+            background-color: #666666;
+            padding: 5px;
+            border-radius: 40%;
+            border: grey 1px solid;
+            }
+        #navLinks ul li:hover {
+            background-color: #666666;
+            }
+        #navLinks ul li.active {
+            background-color: #EF4123;
+            color: #FFFFFF;
+            outline-width: 7px;
+            border: #EF4123 1px solid;
+            }
+        #navLinks ul li.active:hover {
+            background-color: #EF4123;
+            color: #FFFFFF;
+                }
+
+    </style>
+
+    <script type="text/javascript">// <![CDATA[
+        /* This code is based on version.html from Sym_WS_3.1_SDK.zip */
+        /* getBestSellers -- calls the SirsiDynix lookupBestSellerTitles web service using REST and returns JSON.
+         * A callback function is specified to handle displaying the results. Using the JSON approach
+         * gets around the cross-domain problem that happens when returning XML.
+         */
+
+        var myarray = [-50,-100,-200,-300,-400,-500,-600,-700,-800,-900,-1000,-1100,-1200,-1300,-1400,-1500,-1600,-1700,-1800,-1900];
+
+
+        function getBestSellers(url) {
+            var scriptTag = document.createElement("script");
+            scriptTag.type = "text/javascript";
+            scriptTag.src = url;
+            document.getElementsByTagName("head")[0].appendChild(scriptTag);
+        }
+
+        /* showCovers -- this is a callback function. That is it is called from getBestSellers once the
+         * JSON data has been retrieved.
+         */
+        function showCovers(bestSellerID,titlesResponse) {
+            if (typeof(titlesResponse.faultResponse) == "object") {
+                alert("That request returned a faultncode: " + titlesResponse.faultResponse.code + "nMessage: " + titlesResponse.faultResponse.string);
+                return;
+            }
+
+            var resultLinks = "";
+
+            for (var i=0; i<=18; i++) {
+
+                var titleInfo       = titlesResponse.bestSellerTitleInfo[i];
+                    ISBN            = titleInfo.ISBN,
+                    author          = titleInfo.author,
+                    searchString    = titleInfo.searchString,
+                    title1          = titleInfo.title1;
+                var aResultLink = '<a href="https://fcpl.ent.sirsi.net/client/en_US/default/search/results?qu=' +
+                     ISBN + '" target="_blank"><img src="http://content.sirsi.net/uhtbin/getenrich/' + ISBN +
+                     '/COVER_FULL" border="0" height="150" width="100" class="content" id="book'+ i +'" data-pos="'+ myarray[i].valueOf()+'"></a>&nbsp;&nbsp;';
+                resultLinks += aResultLink;
+
+                // You can uncomment the console line to display the results in a debugger console.
+                // To bring up a debugger console in Google Chrome type Ctrl-Shift-I.
+               // console.log(aResultLink);
+
+
+            }
+            // This places the results in the body of the document where the id=results + bestSellerID
+                document.getElementById("results" + bestSellerID).innerHTML = document.getElementById("results" + bestSellerID).innerHTML + resultLinks;
+        }
+
+
+
+    </script>
+    <script type="text/javascript" src="../jquery-1.11.1.js"></script>
+
+
+</head>
+<body>
+
+    <div id="contentContainer">
+
+    <div id = "wrapper">
+
+        <div  id="resultsNYFICTION">
+
+            <script type="text/javascript">
+                    function showCoversNYFICTION(titlesResponse) { showCovers('NYFICTION',titlesResponse); }
+                    getBestSellers("http://64.26.68.82:8081/symwsbc/rest/standard/lookupBestSellerTitles?clientID=sdIPhoneApp&bestSellerID=NYFICTION&json=true&callback=showCoversNYFICTION");
+
+            </script>
+
+        </div>
+
+    </div>
+
+</div>
+<div id="navLinks">
+
+    <ul>
+        <li class="itemLinks" data-pos="0px"></li>
+        <li class="itemLinks" data-pos="-110px"></li>
+        <li class="itemLinks" data-pos="-210px"></li>
+        <li class="itemLinks" data-pos="-310px"></li>
+        <li class="itemLinks" data-pos="-420px"></li>
+        <li class="itemLinks" data-pos="-510px"></li>
+        <li class="itemLinks" data-pos="-640px"></li>
+        <li class="itemLinks" data-pos="-740px"></li>
+        <li class="itemLinks" data-pos="-840px"></li>
+        <li class="itemLinks" data-pos="-940px"></li>
+        <li class="itemLinks" data-pos="-1055px"></li>
+
+    </ul>
+
+</div>
+
+
+<script src="//www.kirupa.com/prefixfree.min.js"></script>
+<script>
+
+   // just querying the DOM...like a boss!
+var links = document.querySelectorAll(".itemLinks");
+var wrapper = document.querySelector("#wrapper");
+
+// the activeLink provides a pointer to the currently displayed item
+var activeLink = 0;
+
+// setup the event listeners
+for (var i = 0; i < links.length; i++) {
+    var link = links[i];
+    link.addEventListener('click', setClickedItem, false);
+
+    // identify the item for the activeLink
+    link.itemID = i;
+}
+
+// set first item as active
+links[activeLink].classList.add("active");
+
+function setClickedItem(e) {
+    removeActiveLinks();
+    resetTimer();
+
+    var clickedLink = e.target;
+    activeLink = clickedLink.itemID;
+
+    changePosition(clickedLink);
+}
+
+function removeActiveLinks() {
+    for (var i = 0; i < links.length; i++) {
+        links[i].classList.remove("active");
+    }
+}
+
+// Handle changing the slider position as well as ensure
+// the correct link is highlighted as being active
+function changePosition(link) {
+    var position = link.getAttribute("data-pos");
+
+    var translateValue = "translate3d(" + position + ", 0px, 0)";
+    wrapper.style[transformProperty] = translateValue;
+
+    link.classList.add("active");
+}
+
+//
+// Dealing with Transforms
+//
+var transforms = ["transform",
+            "msTransform",
+            "webkitTransform",
+            "mozTransform",
+            "oTransform"];
+
+var transformProperty = getSupportedPropertyName(transforms);
+
+// vendor prefix management
+function getSupportedPropertyName(properties) {
+    for (var i = 0; i < properties.length; i++) {
+        if (typeof document.body.style[properties[i]] != "undefined") {
+            return properties[i];
+        }
+    }
+    return null;
+}
+
+//
+// The code for sliding the content automatically
+//
+var timeoutID;
+
+function startTimer() {
+    // wait 2 seconds before calling goInactive
+    timeoutID = window.setInterval(goToNextItem, 6500);
+}
+startTimer();
+
+function resetTimer() {
+    window.clearInterval(timeoutID);
+    startTimer();
+}
+
+function goToNextItem() {
+    removeActiveLinks();
+
+    if (activeLink < links.length - 1) {
+        activeLink++;
+    } else {
+        activeLink = 0;
+    }
+
+    var newLink = links[activeLink];
+    changePosition(newLink);
+}
+
+
+
+</script>
+
+
+
+
+
+
+
+</body>
+</html>
